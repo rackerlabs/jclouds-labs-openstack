@@ -95,7 +95,7 @@ public class CloudDatabasesUSProviderMetadata extends BaseProviderMetadata {
          .homepage(URI.create("http://www.rackspace.com/cloud/public/databases/"))
          .console(URI.create("https://mycloud.rackspace.com"))
          .linkedServices("rackspace-cloudservers-us", "cloudfiles-us")
-         .iso3166Codes("US-IL", "US-TX")
+         .iso3166Codes("US-IL", "US-TX", "AU-NSW")
          .endpoint("https://identity.api.rackspacecloud.com/v2.0/")
          .defaultProperties(CloudDatabasesUSProviderMetadata.defaultProperties());
       }
