@@ -14,31 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.openstack.glance.v1_0.internal;
+package org.jclouds.openstack.glance.v2_0;
 
-import java.util.Properties;
-
-import org.jclouds.apis.BaseApiLiveTest;
-import org.jclouds.openstack.glance.v1_0.GlanceApi;
-import org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties;
+import org.jclouds.View;
+import org.jclouds.apis.internal.BaseApiMetadataTest;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.TypeToken;
+
 /**
- * Tests behavior of {@code GlanceApi}
  * 
- * @author Adrian Cole
+ * @author Ignacio Mulas
  */
-@Test(groups = "live")
-public class BaseGlanceApiLiveTest extends BaseApiLiveTest<GlanceApi> {
-
-   public BaseGlanceApiLiveTest() {
-      provider = "openstack-glance-v1";
-   }
-
-   @Override
-   protected Properties setupProperties() {
-      Properties props = super.setupProperties();
-      setIfTestSystemPropertyPresent(props, KeystoneProperties.CREDENTIAL_TYPE);
-      return props;
+@Test(groups = "unit", testName = "GlanceApiMetadataTest")
+public class GlanceApiMetadataTest extends BaseApiMetadataTest {
+   public GlanceApiMetadataTest() {
+      super(new GlanceApiMetadata(), ImmutableSet.<TypeToken<? extends View>> of());
    }
 }

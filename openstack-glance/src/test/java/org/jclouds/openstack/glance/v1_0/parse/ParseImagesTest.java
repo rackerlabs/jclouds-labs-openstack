@@ -39,7 +39,7 @@ public class ParseImagesTest extends BaseSetParserTest<Image> {
 
    @Override
    public String resource() {
-      return "/images.json";
+      return "/images_v1.json";
    }
 
    @Override

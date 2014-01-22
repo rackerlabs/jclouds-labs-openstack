@@ -37,7 +37,7 @@ public class ParseImageDetailsTest extends BaseItemParserTest<ImageDetails> {
 
    @Override
    public String resource() {
-      return "/image.json";
+      return "/image_v1.json";
    }
 
    @Override

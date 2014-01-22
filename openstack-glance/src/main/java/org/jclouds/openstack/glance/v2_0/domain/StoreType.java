@@ -14,13 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.openstack.glance.v1_0.config;
+package org.jclouds.openstack.glance.v2_0.domain;
 
 /**
- * Configuration properties and constants used in openstack Glance connections.
- *
- * @author Adrian Cole
+ * Backing store types for glance images
+ * 
+ * @author Ignacio Mulas
+ * @see <a href= "http://glance.openstack.org/architecture.html#what-is-a-store" />
  */
-public class GlanceProperties {
+public enum StoreType {
+   /**
+    * Filesystem store
+    */
+   FILE,
+   /**
+    * S3 store
+    */
+   S3,
+   /**
+    * OpenStack swift store
+    */
+   SWIFT,
+   /**
+    * RADOS (Reliable Autonomic Distributed Object Store) Block Device store
+    */
+   RBD,
+   /**
+    * HTTP (read-only) store
+    */
+   HTTP;
 
+   public String value() {
+      return name().toLowerCase().replace("_", "+");
+   }
+
+   @Override
+   public String toString() {
+      return value();
+   }
 }

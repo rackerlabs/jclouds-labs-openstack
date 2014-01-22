@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.openstack.glance.v1_0;
+package org.jclouds.openstack.glance.v2_0;
 
 import static org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties.CREDENTIAL_TYPE;
 import static org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties.SERVICE_TYPE;
@@ -22,7 +22,8 @@ import static org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties.SERV
 import java.net.URI;
 import java.util.Properties;
 
-import org.jclouds.openstack.glance.v1_0.config.GlanceHttpApiModule;
+import org.jclouds.apis.ApiMetadata;
+import org.jclouds.openstack.glance.v2_0.config.GlanceHttpApiModule;
 import org.jclouds.openstack.keystone.v2_0.config.AuthenticationApiModule;
 import org.jclouds.openstack.keystone.v2_0.config.CredentialTypes;
 import org.jclouds.openstack.keystone.v2_0.config.KeystoneAuthenticationModule;
@@ -34,9 +35,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
 
 /**
- * Implementation of {@link ApiMetadata} for Glance 1.0 API
+ * Implementation of {@link ApiMetadata} for Glance 2.0 API
  * 
- * @author Adrian Cole
+ * @author Ignacio Mulas
  */
 public class GlanceApiMetadata extends BaseHttpApiMetadata<GlanceApi> {
 
@@ -63,22 +64,21 @@ public class GlanceApiMetadata extends BaseHttpApiMetadata<GlanceApi> {
    public static class Builder extends BaseHttpApiMetadata.Builder<GlanceApi, Builder> {
 
       protected Builder() {
-          id("openstack-glance-v1")
-         .name("OpenStack Glance API")
-         .identityName("${tenantName}:${userName} or ${userName}, if your keystone supports a default tenant")
-         .credentialName("${password}")
-         .endpointName("KeyStone base url ending in /v2.0/")
-         .documentation(URI.create("http://glance.openstack.org/glanceapi.html"))
-         .version("1.0")
-         .defaultEndpoint("http://localhost:5000/v2.0/")
-         .defaultProperties(GlanceApiMetadata.defaultProperties())
-         .defaultModules(ImmutableSet.<Class<? extends Module>>builder()
-                                     .add(AuthenticationApiModule.class)
-                                     .add(KeystoneAuthenticationModule.class)
-                                     .add(ZoneModule.class)
-                                     .add(GlanceHttpApiModule.class).build());
+         id("openstack-glance-v2")
+               .name("OpenStack Glance API")
+               .identityName("${tenantName}:${userName} or ${userName}, if your keystone supports a default tenant")
+               .credentialName("${password}")
+               .endpointName("KeyStone base url ending in /v2.0/")
+               .documentation(URI.create("http://glance.openstack.org/glanceapi.html"))
+               .version("2.0")
+               .defaultEndpoint("http://localhost:5000/v2.0/")
+               .defaultProperties(GlanceApiMetadata.defaultProperties())
+               .defaultModules(
+                     ImmutableSet.<Class<? extends Module>> builder().add(AuthenticationApiModule.class)
+                           .add(KeystoneAuthenticationModule.class).add(ZoneModule.class)
+                           .add(GlanceHttpApiModule.class).build());
       }
-      
+
       @Override
       public GlanceApiMetadata build() {
          return new GlanceApiMetadata(this);

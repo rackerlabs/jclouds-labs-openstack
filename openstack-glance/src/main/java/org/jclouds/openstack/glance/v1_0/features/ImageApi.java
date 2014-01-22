@@ -66,6 +66,7 @@ import org.jclouds.rest.annotations.Transform;
  *      src</a>
  */
 @RequestFilters(AuthenticateRequest.class)
+@Path("/v1.0")
 public interface ImageApi {
 
    /**
