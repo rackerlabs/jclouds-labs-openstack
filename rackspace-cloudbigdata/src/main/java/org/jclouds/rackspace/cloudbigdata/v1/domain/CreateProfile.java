@@ -147,8 +147,11 @@ public class CreateProfile implements Comparable<CreateProfile> {
       protected String credentialsUsername;
       protected String credentialsApikey;
 
-      /** 
-       * @param username The name of this Profile.
+      /**
+       * CBD provisions each server in the cluster with the username and and
+       * password that are part of the profile. You can ssh into the nodes
+       * with these credentials. These credentials are required.
+       * @param username The username of this Profile.
        * @return The builder object.
        * @see CreateProfile#getUsername()
        */
@@ -157,7 +160,10 @@ public class CreateProfile implements Comparable<CreateProfile> {
          return this;
       }
 
-      /** 
+      /**
+       * CBD provisions each server in the cluster with the username and and
+       * password that are part of the profile. You can ssh into the nodes
+       * with these credentials. These credentials are required.
        * @param password The password for this Profile.
        * @return The builder object.
        * @see CreateProfile#getPassword()
@@ -167,7 +173,11 @@ public class CreateProfile implements Comparable<CreateProfile> {
          return this;
       }
       
-      /** 
+      /**
+       * The cloud credentials username and api key are stored in the cluster configuration so
+       * that Hadoop can read/write objects stored in Cloud Files. These
+       * credentials are optional. If they are not supplied, the cluster will not
+       * have access to Cloud Files but will otherwise operate normally.
        * @param credentialsUsername The login name of this Profile.
        * @return The builder object.
        * @see CreateProfile#getCredentialsUsername()
@@ -178,6 +188,10 @@ public class CreateProfile implements Comparable<CreateProfile> {
       }
       
       /** 
+       * The cloud credentials username and api key are stored in the cluster configuration so
+       * that Hadoop can read/write objects stored in Cloud Files. These
+       * credentials are optional. If they are not supplied, the cluster will not
+       * have access to Cloud Files but will otherwise operate normally.
        * @param credentialsApikey The name of this Profile.
        * @return The builder object.
        * @see CreateProfile#getCredentialsApiKey()
