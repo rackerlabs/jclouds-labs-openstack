@@ -16,6 +16,31 @@
  */
 package org.jclouds.openstack.swift.v1.features;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteSource;
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
+import com.squareup.okhttp.mockwebserver.RecordedRequest;
+import org.jclouds.date.internal.SimpleDateFormatDateService;
+import org.jclouds.http.HttpResponseException;
+import org.jclouds.io.Payload;
+import org.jclouds.io.payloads.ByteSourcePayload;
+import org.jclouds.openstack.swift.v1.CopyObjectException;
+import org.jclouds.openstack.swift.v1.SwiftApi;
+import org.jclouds.openstack.swift.v1.domain.ObjectList;
+import org.jclouds.openstack.swift.v1.domain.SwiftObject;
+import org.jclouds.openstack.swift.v1.options.ListContainerOptions;
+import org.jclouds.openstack.swift.v1.reference.SwiftHeaders;
+import org.jclouds.openstack.v2_0.internal.BaseOpenStackMockTest;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 import static com.google.common.base.Charsets.US_ASCII;
 import static com.google.common.net.HttpHeaders.RANGE;
 import static org.jclouds.Constants.PROPERTY_MAX_RETRIES;
@@ -34,32 +59,6 @@ import static org.jclouds.util.Strings2.toStringAndClose;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import org.jclouds.date.internal.SimpleDateFormatDateService;
-import org.jclouds.http.HttpResponseException;
-import org.jclouds.io.Payload;
-import org.jclouds.io.payloads.ByteSourcePayload;
-import org.jclouds.openstack.swift.v1.CopyObjectException;
-import org.jclouds.openstack.swift.v1.SwiftApi;
-import org.jclouds.openstack.swift.v1.domain.ObjectList;
-import org.jclouds.openstack.swift.v1.domain.SwiftObject;
-import org.jclouds.openstack.swift.v1.options.ListContainerOptions;
-import org.jclouds.openstack.swift.v1.reference.SwiftHeaders;
-import org.jclouds.openstack.v2_0.internal.BaseOpenStackMockTest;
-import org.testng.annotations.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteSource;
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
 /**
  * Provides mock tests for the {@link ObjectApi}.
@@ -136,7 +135,7 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          server.shutdown();
       }
    }
-   
+
    public void testListOptions() throws Exception {
       MockWebServer server = mockOpenStackServer();
       server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
@@ -320,7 +319,7 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          overrides.setProperty(PROPERTY_RETRY_DELAY_START, 0 + ""); // exponential backoff already working for this call. This is the delay BETWEEN attempts.
 
          final SwiftApi api = api(server.getUrl("/").toString(), "openstack-swift", overrides);
-         
+
          api.getObjectApiForRegionAndContainer("DFW", "myContainer").put("myObject", new ByteSourcePayload(ByteSource.wrap("swifty".getBytes())), metadata(metadata));
 
          fail("testReplaceTimeout test should have failed with an HttpResponseException.");
@@ -353,7 +352,7 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
       }
    }
 
-   public void testUpdateMetadataContentType() throws Exception {
+   public void testUpdateMetadataContentTypeEmpty() throws Exception {
       MockWebServer server = mockOpenStackServer();
       server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
       server.enqueue(addCommonHeaders(objectResponse()
@@ -368,6 +367,35 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          assertEquals(server.takeRequest().getRequestLine(), "POST /tokens HTTP/1.1");
          RecordedRequest replaceRequest = server.takeRequest();
          assertEquals(replaceRequest.getHeaders("Content-Type").get(0), "", "updateMetadata should send an empty content-type header, but sent "
+               + replaceRequest.getHeaders("Content-Type").get(0).toString());
+
+         assertEquals(replaceRequest.getRequestLine(),
+               "POST /v1/MossoCloudFS_5bcf396e-39dd-45ff-93a1-712b9aba90a9/myContainer/myObject HTTP/1.1");
+         for (Entry<String, String> entry : metadata.entrySet()) {
+            assertEquals(replaceRequest.getHeader(OBJECT_METADATA_PREFIX + entry.getKey().toLowerCase()), entry.getValue());
+         }
+      } finally {
+         server.shutdown();
+      }
+   }
+
+   public void testUpdateMetadataContentTypeUpdate() throws Exception {
+      MockWebServer server = mockOpenStackServer();
+      server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
+      server.enqueue(addCommonHeaders(objectResponse()
+            .addHeader(OBJECT_METADATA_PREFIX + "ApiName", "swift")
+            .addHeader(OBJECT_METADATA_PREFIX + "ApiVersion", "v1.1")));
+
+      try {
+         SwiftApi api = api(server.getUrl("/").toString(), "openstack-swift");
+
+         Map<String, String> metadataContentType = ImmutableMap.of("ApiName", "swift", "ApiVersion", "v1.1", "content-type", "special/test");
+         assertTrue(api.getObjectApiForRegionAndContainer("DFW", "myContainer").updateMetadata("myObject", metadataContentType));
+
+         assertEquals(server.getRequestCount(), 2);
+         assertEquals(server.takeRequest().getRequestLine(), "POST /tokens HTTP/1.1");
+         RecordedRequest replaceRequest = server.takeRequest();
+         assertEquals(replaceRequest.getHeaders("Content-Type").get(0), "special/test", "updateMetadata should send special/test content-type header, but sent "
                + replaceRequest.getHeaders("Content-Type").get(0).toString());
 
          assertEquals(replaceRequest.getRequestLine(),
@@ -439,7 +467,7 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          server.shutdown();
       }
    }
-   
+
    public void testCopyObject() throws Exception {
       MockWebServer server = mockOpenStackServer();
       server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
@@ -449,10 +477,10 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          SwiftApi api = api(server.getUrl("/").toString(), "openstack-swift");
          assertTrue(api.getObjectApiForRegionAndContainer("DFW", "foo")
             .copy("bar.txt", "bar", "foo.txt"));
-              
+
          assertEquals(server.getRequestCount(), 2);
          assertEquals(server.takeRequest().getRequestLine(), "POST /tokens HTTP/1.1");
-         
+
          RecordedRequest copyRequest = server.takeRequest();
          assertEquals(copyRequest.getRequestLine(),
                "PUT /v1/MossoCloudFS_5bcf396e-39dd-45ff-93a1-712b9aba90a9/foo/bar.txt HTTP/1.1");
@@ -460,23 +488,23 @@ public class ObjectApiMockTest extends BaseOpenStackMockTest<SwiftApi> {
          server.shutdown();
       }
    }
-   
+
    @Test(expectedExceptions = CopyObjectException.class)
    public void testCopyObjectFail() throws InterruptedException, IOException {
       MockWebServer server = mockOpenStackServer();
       server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
       server.enqueue(addCommonHeaders(new MockResponse().setResponseCode(404)
             .addHeader(SwiftHeaders.OBJECT_COPY_FROM, "/bogus/foo.txt")));
-      
+
       try {
          SwiftApi api = api(server.getUrl("/").toString(), "openstack-swift");
          // the following line will throw the CopyObjectException
-         api.getObjectApiForRegionAndContainer("DFW", "foo").copy("bar.txt", "bogus", "foo.txt"); 
+         api.getObjectApiForRegionAndContainer("DFW", "foo").copy("bar.txt", "bogus", "foo.txt");
       } finally {
          server.shutdown();
-      }  
+      }
    }
-   
+
    private static final Map<String, String> metadata = ImmutableMap.of("ApiName", "swift", "ApiVersion", "v1.1");
 
    static MockResponse objectResponse() {

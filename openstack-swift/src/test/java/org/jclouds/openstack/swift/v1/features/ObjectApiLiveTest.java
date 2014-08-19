@@ -16,21 +16,8 @@
  */
 package org.jclouds.openstack.swift.v1.features;
 
-import static org.jclouds.http.options.GetOptions.Builder.tail;
-import static org.jclouds.io.Payloads.newByteSourcePayload;
-import static org.jclouds.openstack.swift.v1.options.ListContainerOptions.Builder.marker;
-import static org.jclouds.util.Strings2.toStringAndClose;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteSource;
 import org.jclouds.http.options.GetOptions;
 import org.jclouds.io.Payload;
 import org.jclouds.openstack.swift.v1.CopyObjectException;
@@ -43,8 +30,20 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteSource;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
+
+import static org.jclouds.http.options.GetOptions.Builder.tail;
+import static org.jclouds.io.Payloads.newByteSourcePayload;
+import static org.jclouds.openstack.swift.v1.options.ListContainerOptions.Builder.marker;
+import static org.jclouds.util.Strings2.toStringAndClose;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  * Provides live tests for the {@link ObjectApi}.
@@ -175,6 +174,33 @@ public class ObjectApiLiveTest extends BaseSwiftApiLiveTest<SwiftApi> {
             assertEquals(object.getMetadata().get(entry.getKey().toLowerCase()), entry.getValue(),
                   object + " didn't have metadata: " + entry);
          }
+      }
+   }
+
+   public void testUpdateContentType() throws Exception {
+      for (String regionId : regions) {
+         ObjectApi objectApi = api.getObjectApiForRegionAndContainer(regionId, containerName);
+
+         Map<String, String> meta = ImmutableMap.of("MyAdd1", "foo", "MyAdd2", "bar", "Content-Type", "test/special");
+         assertTrue(objectApi.updateMetadata(name, meta));
+
+         SwiftObject object = objectApi.get(name);
+         assertEquals(object.getPayload().getContentMetadata().getContentType(), "test/special");
+      }
+   }
+
+   public void testEmptyContentType() throws Exception {
+      for (String regionId : regions) {
+         ObjectApi objectApi = api.getObjectApiForRegionAndContainer(regionId, containerName);
+
+         Map<String, String> meta = ImmutableMap.of("MyAdd1", "foo", "MyAdd2", "bar", "Content-Type", "test/special1");
+         assertTrue(objectApi.updateMetadata(name, meta));
+
+         Map<String, String> meta2 = ImmutableMap.of("MyAdd1", "foo", "MyAdd2", "bar");
+         assertTrue(objectApi.updateMetadata(name, meta2));
+
+         SwiftObject object = objectApi.get(name);
+         assertEquals(object.getPayload().getContentMetadata().getContentType(), "test/special1");
       }
    }
 

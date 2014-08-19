@@ -16,23 +16,7 @@
  */
 package org.jclouds.openstack.swift.v1.features;
 
-import static com.google.common.net.HttpHeaders.EXPECT;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.OBJECT_COPY_FROM;
-
-import java.util.Map;
-
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-
+import com.google.common.annotations.Beta;
 import org.jclouds.Fallbacks.FalseOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.Fallbacks.VoidOnNotFoundOr404;
@@ -46,6 +30,7 @@ import org.jclouds.openstack.swift.v1.binders.BindMetadataToHeaders.BindRemoveOb
 import org.jclouds.openstack.swift.v1.binders.SetPayload;
 import org.jclouds.openstack.swift.v1.domain.ObjectList;
 import org.jclouds.openstack.swift.v1.domain.SwiftObject;
+import org.jclouds.openstack.swift.v1.filters.ContentTypeFilter;
 import org.jclouds.openstack.swift.v1.functions.ETagHeader;
 import org.jclouds.openstack.swift.v1.functions.ParseObjectFromResponse;
 import org.jclouds.openstack.swift.v1.functions.ParseObjectListFromResponse;
@@ -58,7 +43,21 @@ import org.jclouds.rest.annotations.QueryParams;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
 
-import com.google.common.annotations.Beta;
+import javax.inject.Named;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import java.util.Map;
+
+import static com.google.common.net.HttpHeaders.EXPECT;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.OBJECT_COPY_FROM;
 
 /**
  * Provides access to the OpenStack Object Storage (Swift) Object API features.
@@ -74,7 +73,7 @@ public interface ObjectApi {
 
    /**
     * Lists up to 10,000 objects.
-    * 
+    *
     * @return an {@link ObjectList} of {@link SwiftObject} ordered by name or {@code null}.
     */
    @Named("object:list")
@@ -90,10 +89,10 @@ public interface ObjectApi {
     * Lists up to 10,000 objects. To control a large list of containers beyond
     * 10,000 objects, use the {@code marker} and {@code endMarker} parameters in the
     * {@link ListContainerOptions} class.
-    * 
-    * @param options  
+    *
+    * @param options
     *           the {@link ListContainerOptions} for controlling the returned list.
-    * 
+    *
     * @return an {@link ObjectList} of {@link SwiftObject} ordered by name or {@code null}.
     */
    @Named("object:list")
@@ -107,7 +106,7 @@ public interface ObjectApi {
 
    /**
     * Creates or updates a {@link SwiftObject}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param payload
@@ -124,14 +123,14 @@ public interface ObjectApi {
 
    /**
     * Creates or updates a {@link SwiftObject}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param payload
     *           corresponds to {@link SwiftObject#getPayload()}.
     * @param options
     *           {@link PutOptions options} to control creating the {@link SwiftObject}.
-    * 
+    *
     * @return {@link SwiftObject#getETag()} of the object.
     */
    @Named("object:put")
@@ -144,10 +143,10 @@ public interface ObjectApi {
 
    /**
     * Gets the {@link SwiftObject} metadata without its {@link Payload#openStream() body}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
-    * 
+    *
     * @return the {@link SwiftObject} or {@code null}, if not found.
     */
    @Named("object:getWithoutBody")
@@ -160,10 +159,10 @@ public interface ObjectApi {
 
    /**
     * Gets the {@link SwiftObject} including its {@link Payload#openStream() body}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
-    * 
+    *
     * @return the {@link SwiftObject} or {@code null}, if not found.
     */
    @Named("object:get")
@@ -176,12 +175,12 @@ public interface ObjectApi {
 
    /**
     * Gets the {@link SwiftObject} including its {@link Payload#openStream() body}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param options
     *           options to control the download.
-    * 
+    *
     * @return the {@link SwiftObject} or {@code null}, if not found.
     */
    @Named("object:get")
@@ -194,32 +193,33 @@ public interface ObjectApi {
 
    /**
     * Creates or updates the metadata for a {@link SwiftObject}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param metadata
     *           the metadata to create or update.
-    * 
-    * @return {@code true} if the metadata was successfully created or updated, 
+    *
+    * @return {@code true} if the metadata was successfully created or updated,
     *         {@code false} if not.
     */
    @Named("object:updateMetadata")
    @POST
    @Fallback(FalseOnNotFoundOr404.class)
    @Path("/{objectName}")
-   @Produces("")
+   //@Produces("")
+   @RequestFilters(ContentTypeFilter.class)
    boolean updateMetadata(@PathParam("objectName") String objectName,
          @BinderParam(BindObjectMetadataToHeaders.class) Map<String, String> metadata);
 
    /**
     * Deletes the metadata from a {@link SwiftObject}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param metadata
     *           corresponds to {@link SwiftObject#getMetadata()}.
-    * 
-    * @return {@code true} if the metadata was successfully deleted, 
+    *
+    * @return {@code true} if the metadata was successfully deleted,
     *         {@code false} if not.
     */
    @Named("object:deleteMetadata")
@@ -231,7 +231,7 @@ public interface ObjectApi {
 
    /**
     * Deletes an object, if present.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     */
@@ -242,20 +242,20 @@ public interface ObjectApi {
    void delete(@PathParam("objectName") String objectName);
 
    /**
-    * Copies an object from one container to another. 
-    * 
+    * Copies an object from one container to another.
+    *
     * <h3>NOTE</h3>
     * This is a server side copy.
-    * 
+    *
     * @param destinationObject
     *           the destination object name.
     * @param sourceContainer
     *           the source container name.
     * @param sourceObject
     *           the source object name.
-    * 
+    *
     * @return {@code true} if the object was successfully copied, {@code false} if not.
-    * 
+    *
     * @throws org.jclouds.openstack.swift.v1.CopyObjectException if the source or destination container do not exist.
     */
    @Named("object:copy")
@@ -288,14 +288,14 @@ public interface ObjectApi {
 
    /**
     * Creates or updates a {@link SwiftObject}.
-    * 
+    *
     * @param objectName
     *           corresponds to {@link SwiftObject#getName()}.
     * @param payload
     *           corresponds to {@link SwiftObject#getPayload()}.
     * @param metadata
     *           corresponds to {@link SwiftObject#getMetadata()}.
-    * 
+    *
     * @return {@link SwiftObject#getEtag()} of the object.
     *
     * @deprecated Please use {@link #put(String, Payload)} or {@link #put(String, Payload, PutOptions)}

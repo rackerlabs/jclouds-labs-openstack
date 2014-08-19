@@ -16,38 +16,36 @@
  */
 package org.jclouds.openstack.swift.v1.binders;
 
-import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.ACCOUNT_METADATA_PREFIX;
-import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.CONTAINER_METADATA_PREFIX;
-import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.OBJECT_METADATA_PREFIX;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
+import org.jclouds.http.HttpRequest;
+import org.jclouds.rest.Binder;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.jclouds.http.HttpRequest;
-import org.jclouds.rest.Binder;
-
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.ACCOUNT_METADATA_PREFIX;
+import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.CONTAINER_METADATA_PREFIX;
+import static org.jclouds.openstack.swift.v1.reference.SwiftHeaders.OBJECT_METADATA_PREFIX;
 
 /**
  * Will lower-case header keys due to a swift implementation to return headers
  * in a different case than sent. ex.
- * 
+ *
  * <pre>
  * >> X-Account-Meta-MyDelete1: foo
  * >> X-Account-Meta-MyDelete2: bar
  * </pre>
- * 
+ *
  * results in:
- * 
+ *
  * <pre>
  * << X-Account-Meta-Mydelete1: foo
  * << X-Account-Meta-Mydelete2: bar
  * </pre>
- * 
+ *
  * <h4>Note</h4> <br/>
  * HTTP response headers keys are known to be case-insensitive, but this
  * practice of mixing up case will prevent metadata keys such as those in
@@ -132,6 +130,8 @@ public class BindMetadataToHeaders implements Binder {
          String keyInLowercase = keyVal.getKey().toLowerCase();
          if (keyVal.getKey().startsWith(metadataPrefix)) {
             putMetadata(builder, keyInLowercase, keyVal.getValue());
+         } else if (keyInLowercase.equals("content-type")) {
+            putMetadata(builder, "Content-Type", keyVal.getValue());
          } else {
             putMetadata(builder, String.format("%s%s", metadataPrefix, keyInLowercase), keyVal.getValue());
          }
