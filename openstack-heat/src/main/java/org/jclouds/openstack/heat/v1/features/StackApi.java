@@ -16,35 +16,40 @@
  */
 package org.jclouds.openstack.heat.v1.features;
 
-import java.util.List;
-
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
-import org.jclouds.Fallbacks.EmptyListOnNotFoundOr404;
+import org.jclouds.Fallbacks.EmptyFluentIterableOnNotFoundOr404;
+import org.jclouds.openstack.heat.v1.domain.Stack;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
+import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
 
-import com.google.common.annotations.Beta;
-
+import com.google.common.collect.FluentIterable;
 
 /**
- * Provides access to Resource features.
+ * Provides access to the OpenStack Orchestration (Heat) Stack API features.
  */
-@Beta
 @RequestFilters(AuthenticateRequest.class)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface ResourceApi {
+@Path("/stacks")
+public interface StackApi {
 
-   @Named("resource:listTypes")
+   @Named("stack:list")
    @GET
-   @SelectJson("resource_types")
-   @Path("/resource_types")
-   @Fallback(EmptyListOnNotFoundOr404.class)
-   List<String> listTypes();
+   @SelectJson("stacks")
+   @Fallback(EmptyFluentIterableOnNotFoundOr404.class)
+   FluentIterable<Stack> list();
+
+   @Named("stack:list")
+   @GET
+   @SelectJson("stacks")
+   @Fallback(EmptyFluentIterableOnNotFoundOr404.class)
+   FluentIterable<Stack> list(PaginationOptions options);
+
 }

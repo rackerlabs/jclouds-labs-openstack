@@ -16,35 +16,28 @@
  */
 package org.jclouds.openstack.heat.v1.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-
-import org.jclouds.Fallbacks.EmptyListOnNotFoundOr404;
-import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.annotations.SelectJson;
-
-import com.google.common.annotations.Beta;
-
+import org.jclouds.openstack.heat.v1.domain.Stack;
+import org.jclouds.openstack.heat.v1.internal.BaseHeatApiLiveTest;
+import org.testng.annotations.Test;
 
 /**
- * Provides access to Resource features.
+ * Tests parsing and Guice wiring of StackApi
  */
-@Beta
-@RequestFilters(AuthenticateRequest.class)
-@Consumes(MediaType.APPLICATION_JSON)
-public interface ResourceApi {
+@Test(groups = "live", testName = "StackApiLiveTest")
+public class StackApiLiveTest extends BaseHeatApiLiveTest {
 
-   @Named("resource:listTypes")
-   @GET
-   @SelectJson("resource_types")
-   @Path("/resource_types")
-   @Fallback(EmptyListOnNotFoundOr404.class)
-   List<String> listTypes();
+   public void testList() {
+      for (String region : api.getConfiguredRegions()) {
+         StackApi stackApi = api.getStackApi(region);
+
+         List<Stack> stacks = stackApi.list().toList();
+
+         assertThat(stacks).isNotNull();
+      }
+   }
+
 }

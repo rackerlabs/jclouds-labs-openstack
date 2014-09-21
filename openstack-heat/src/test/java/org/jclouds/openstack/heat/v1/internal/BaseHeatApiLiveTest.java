@@ -17,18 +17,25 @@
 package org.jclouds.openstack.heat.v1.internal;
 
 import java.util.Properties;
+import java.util.Set;
 
 import org.jclouds.apis.BaseApiLiveTest;
+import org.jclouds.location.reference.LocationConstants;
 import org.jclouds.openstack.heat.v1.HeatApi;
 import org.jclouds.openstack.keystone.v2_0.config.KeystoneProperties;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Tests behavior of {@link HeatApi}.
  *
  */
-@Test(groups = "live")
+@Test(groups = "live", testName = "BaseHeatApiLiveTest")
 public class BaseHeatApiLiveTest extends BaseApiLiveTest<HeatApi> {
+
+   protected Set<String> regions;
 
    public BaseHeatApiLiveTest() {
       provider = "openstack-heat";
@@ -38,7 +45,22 @@ public class BaseHeatApiLiveTest extends BaseApiLiveTest<HeatApi> {
    protected Properties setupProperties() {
       Properties props = super.setupProperties();
       setIfTestSystemPropertyPresent(props, KeystoneProperties.CREDENTIAL_TYPE);
+      setIfTestSystemPropertyPresent(props, LocationConstants.PROPERTY_REGION);
       return props;
+   }
+
+   @Override
+   @BeforeClass(groups = "live")
+   public void setup() {
+      super.setup();
+      String providedRegion = System.getProperty("test." + LocationConstants.PROPERTY_REGION);
+      if (providedRegion != null) {
+        regions = ImmutableSet.of(providedRegion);
+      } else {
+        regions = api.getConfiguredRegions();
+      }
+
+      // create a stack
    }
 
 }
