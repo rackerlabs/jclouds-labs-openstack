@@ -24,8 +24,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.jclouds.Fallbacks.EmptyFluentIterableOnNotFoundOr404;
 import org.jclouds.openstack.heat.v1.domain.Stack;
+import org.jclouds.openstack.heat.v1.options.ListStackOptions;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
-import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.SelectJson;
@@ -50,6 +50,6 @@ public interface StackApi {
    @GET
    @SelectJson("stacks")
    @Fallback(EmptyFluentIterableOnNotFoundOr404.class)
-   FluentIterable<Stack> list(PaginationOptions options);
+   FluentIterable<Stack> list(ListStackOptions options);
 
 }
