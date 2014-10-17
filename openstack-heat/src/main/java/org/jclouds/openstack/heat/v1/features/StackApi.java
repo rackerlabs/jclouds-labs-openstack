@@ -20,9 +20,13 @@ import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.jclouds.Fallbacks.EmptyFluentIterableOnNotFoundOr404;
+import org.jclouds.Fallbacks.NullOnNotFoundOr404;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.openstack.heat.v1.domain.AutoStack;
 import org.jclouds.openstack.heat.v1.domain.Stack;
 import org.jclouds.openstack.heat.v1.options.ListStackOptions;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
@@ -51,5 +55,13 @@ public interface StackApi {
    @SelectJson("stacks")
    @Fallback(EmptyFluentIterableOnNotFoundOr404.class)
    FluentIterable<Stack> list(ListStackOptions options);
+
+   @Named("stack:get")
+   @GET
+   @SelectJson("stack")
+   @Path("/{stack_name}/{stack_id}")
+   @Fallback(NullOnNotFoundOr404.class)
+   @Nullable
+   AutoStack get(@PathParam("stack_name") String name, @PathParam("stack_id") String id);
 
 }

@@ -18,9 +18,11 @@ package org.jclouds.openstack.heat.v1.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.jclouds.openstack.heat.v1.HeatApi;
+import org.jclouds.openstack.heat.v1.domain.AutoStack;
 import org.jclouds.openstack.heat.v1.domain.Stack;
 import org.jclouds.openstack.heat.v1.internal.BaseHeatApiMockTest;
 import org.testng.annotations.Test;
@@ -34,6 +36,42 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "StackApiMockTest")
 public class StackApiMockTest extends BaseHeatApiMockTest {
 
+   public void testGetAutoStack() throws Exception {
+      MockWebServer server = mockOpenStackServer();
+      server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));
+      server.enqueue(addCommonHeaders(
+            new MockResponse().setResponseCode(200).setBody(stringFromResource("/stack_get_response.json"))));
+
+      try {
+         HeatApi heatApi = api(server.getUrl("/").toString(), "openstack-heat", overrides);
+         StackApi api = heatApi.getStackApi("RegionOne");
+
+         AutoStack stack = api.get("simple_stack", "3095aefc-09fb-4bc7-b1f0-f21a304e864c");
+         System.out.println(stack);
+
+         Method[] methods = stack.getClass().getDeclaredMethods();
+         for (Method m : methods) {
+            System.out.println(m.getName());
+         }
+
+         /*
+          * Check request
+          */
+         assertThat(server.getRequestCount()).isEqualTo(2);
+         assertAuthentication(server);
+         assertRequest(server.takeRequest(), "GET", BASE_URI + "/stacks/simple_stack/3095aefc-09fb-4bc7-b1f0-f21a304e864c");
+
+         /*
+          * Check response
+          */
+         assertThat(stack).isNotNull();
+         //assertThat(stacks.size()).isEqualTo(1);
+
+      } finally {
+         server.shutdown();
+      }
+
+   }
    public void testList() throws Exception {
       MockWebServer server = mockOpenStackServer();
       server.enqueue(addCommonHeaders(new MockResponse().setBody(stringFromResource("/access.json"))));

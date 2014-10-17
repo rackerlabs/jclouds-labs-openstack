@@ -46,19 +46,6 @@
     <jclouds.osgi.import>org.jclouds*;version="${project.version}",*</jclouds.osgi.import>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>apache-snapshots</id>
-      <url>https://repository.apache.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.jclouds.api</groupId>
@@ -95,18 +82,7 @@
       <artifactId>mockwebserver</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>1.6.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-guava</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
 
   <profiles>
