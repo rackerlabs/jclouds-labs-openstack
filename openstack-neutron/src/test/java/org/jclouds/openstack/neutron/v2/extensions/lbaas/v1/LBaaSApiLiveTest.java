@@ -25,6 +25,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.jclouds.logging.Logger;
 import org.jclouds.openstack.neutron.v2.domain.Network;
@@ -54,6 +55,7 @@ import org.testng.annotations.Test;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 @Test(groups = "live", testName = "LBaaSApiLiveTest")
 public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
@@ -252,6 +254,7 @@ public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
             assertNull(member.getStatusDescription());
 
             // List and Get
+            Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
             Members members = lbaasApi.listMembers(PaginationOptions.Builder.queryParameters(ImmutableMap.of("tenant_id", subnet.getTenantId()).asMultimap()));
             assertNotNull(members);
             assertFalse(members.isEmpty());
