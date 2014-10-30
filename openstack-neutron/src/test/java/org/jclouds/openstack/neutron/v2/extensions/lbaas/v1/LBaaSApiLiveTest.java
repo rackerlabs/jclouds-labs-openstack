@@ -215,7 +215,7 @@ public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
       }
    }
 
-   public void testCreateUpdateAndDeleteMember() {
+   public void testCreateUpdateAndDeleteMember() throws InterruptedException {
       for (String region : api.getConfiguredRegions()) {
          Optional<LBaaSApi> lbaasApiExtension = api.getLBaaSApi(region);
          if (!lbaasApiExtension.isPresent()) {
@@ -254,6 +254,7 @@ public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
             assertNull(member.getStatusDescription());
 
             // List and Get
+            Thread.sleep(5000);
             Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
             Members members = lbaasApi.listMembers(PaginationOptions.Builder.queryParameters(ImmutableMap.of("tenant_id", subnet.getTenantId()).asMultimap()));
             assertNotNull(members);
