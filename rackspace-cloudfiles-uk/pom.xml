@@ -39,8 +39,8 @@
     <test.rackspace-cloudfiles-uk.endpoint>https://lon.identity.api.rackspacecloud.com/v2.0/</test.rackspace-cloudfiles-uk.endpoint>
     <test.rackspace-cloudfiles-uk.api-version>1</test.rackspace-cloudfiles-uk.api-version>
     <test.rackspace-cloudfiles-uk.build-version />
-    <test.rackspace-cloudfiles-uk.identity>${test.rackspace-uk.identity}</test.rackspace-cloudfiles-uk.identity>
-    <test.rackspace-cloudfiles-uk.credential>${test.rackspace-uk.credential}</test.rackspace-cloudfiles-uk.credential>
+    <test.rackspace-cloudfiles-uk.identity>${test.rackspace-cloudfiles-uk.identity}</test.rackspace-cloudfiles-uk.identity>
+    <test.rackspace-cloudfiles-uk.credential>${test.rackspace-cloudfiles-uk.credential}</test.rackspace-cloudfiles-uk.credential>
     <jclouds.osgi.export>org.jclouds.rackspace.cloudfiles.uk*;version="${project.version}"</jclouds.osgi.export>
     <jclouds.osgi.import>org.jclouds*;version="${project.version}",*</jclouds.osgi.import>
   </properties>

@@ -39,8 +39,8 @@
     <test.rackspace-cloudfiles-us.endpoint>https://identity.api.rackspacecloud.com/v2.0/</test.rackspace-cloudfiles-us.endpoint>
     <test.rackspace-cloudfiles-us.api-version>1</test.rackspace-cloudfiles-us.api-version>
     <test.rackspace-cloudfiles-us.build-version />
-    <test.rackspace-cloudfiles-us.identity>${test.rackspace-us.identity}</test.rackspace-cloudfiles-us.identity>
-    <test.rackspace-cloudfiles-us.credential>${test.rackspace-us.credential}</test.rackspace-cloudfiles-us.credential>
+    <test.rackspace-cloudfiles-us.identity>${test.rackspace-cloudfiles-us.identity}</test.rackspace-cloudfiles-us.identity>
+    <test.rackspace-cloudfiles-us.credential>${test.rackspace-cloudfiles-us.credential}</test.rackspace-cloudfiles-us.credential>
     <jclouds.osgi.export>org.jclouds.rackspace.cloudfiles.us*;version="${project.version}"</jclouds.osgi.export>
     <jclouds.osgi.import>org.jclouds*;version="${project.version}",*</jclouds.osgi.import>
   </properties>
