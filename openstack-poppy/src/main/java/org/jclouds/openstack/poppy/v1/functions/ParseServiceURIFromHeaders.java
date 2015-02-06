@@ -14,29 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jclouds.openstack.poppy.v1.domain;
+package org.jclouds.openstack.poppy.v1.functions;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.jclouds.json.SerializedNames;
-import org.jclouds.openstack.v2_0.domain.Link;
+import java.net.URI;
 
-import com.google.auto.value.AutoValue;
+import javax.inject.Singleton;
+
+import org.jclouds.http.HttpResponse;
+import org.jclouds.openstack.poppy.v1.domain.Service;
+
+import com.google.common.base.Function;
+import com.google.common.net.HttpHeaders;
 
 /**
- * Representation of an OpenStack Poppy CDN Provider.
+ * Parses the {@link Service} URI from the Location header of the HTTP Response.
  */
-@AutoValue
-public abstract class Provider {
+@Singleton
+public class ParseServiceURIFromHeaders implements Function<HttpResponse, URI> {
 
-   public abstract String getProvider();
-   public abstract Set<Link> getLinks();
-
-   @SerializedNames({ "provider", "links" })
-   public static Provider create(String provider, Set<Link> links) {
-      return new AutoValue_Provider(provider, links);
-   }
-
-   Provider() {
-   }
+	@Override
+   public URI apply(HttpResponse response) {
+     String locationUri =  checkNotNull(response.getFirstHeaderOrNull(HttpHeaders.LOCATION),
+           HttpHeaders.LOCATION);
+     return URI.create(locationUri);
+    }
 }

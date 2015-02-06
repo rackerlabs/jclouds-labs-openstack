@@ -16,61 +16,63 @@
  */
 package org.jclouds.openstack.poppy.v1.features;
 
+import java.net.URI;
+
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
-import org.jclouds.Fallbacks.EmptyFluentIterableOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
 import org.jclouds.openstack.poppy.v1.config.CDN;
-import org.jclouds.openstack.poppy.v1.domain.Flavor;
+import org.jclouds.openstack.poppy.v1.domain.Service;
+import org.jclouds.openstack.poppy.v1.functions.ParseServiceURIFromHeaders;
+import org.jclouds.openstack.poppy.v1.options.ServiceCreateOptions;
 import org.jclouds.rest.annotations.Endpoint;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.annotations.SelectJson;
+import org.jclouds.rest.annotations.ResponseParser;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.FluentIterable;
 
 /**
- * Provides access to OpenStack Poppy Flavor features.
+ * Provides access to OpenStack Poppy Service features.
  */
 @Beta
 @RequestFilters(AuthenticateRequest.class)
 @Consumes(MediaType.APPLICATION_JSON)
 @Endpoint(CDN.class)
-@Path("/flavors")
-public interface FlavorApi {
+@Path("/services")
+public interface ServiceApi {
 
    /**
-    * Gets a list of Flavors.
-    * <p/>
-    * If there are no Flavors, this method will fallback to an empty collection.
+    * Gets a service.
     *
-    * @return an {@code Iterable} collection.
+    * @param id  the id of the {@code Service}
+    * @return the {@code Service} for the specified id, otherwise {@code null}
     */
-   @Named("flavor:list")
-   @GET
-   @SelectJson("flavors")
-   @Fallback(EmptyFluentIterableOnNotFoundOr404.class)
-   FluentIterable<Flavor> list();
-
-   /**
-    * Gets a Flavor.
-    *
-    * @param id  the id of the {@code Flavor}
-    * @return the {@code Flavor} for the specified id, otherwise {@code null}
-    */
-   @Named("flavor:get")
+   @Named("service:get")
    @GET
    @Path("/{id}")
    @Fallback(NullOnNotFoundOr404.class)
    @Nullable
-   Flavor get(@PathParam("id") String id);
+   Service get(@PathParam("id") String id);
 
+   /**
+    * Creates a service.
+    *
+    * @param options  the options to create the service with
+    * @return a URI to the created service
+    */
+   @Named("service:create")
+   @POST
+   @ResponseParser(ParseServiceURIFromHeaders.class)
+   @Fallback(NullOnNotFoundOr404.class)
+   @Nullable
+   URI create(ServiceCreateOptions options);
 }
