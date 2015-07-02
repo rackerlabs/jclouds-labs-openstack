@@ -16,85 +16,34 @@
  */
 package org.jclouds.openstack.neutron.v2.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.beans.ConstructorProperties;
-
-import javax.inject.Named;
-
-import org.jclouds.javax.annotation.Nullable;
-
-import com.google.common.base.Objects;
+import org.jclouds.json.SerializedNames;
+import com.google.auto.value.AutoValue;
 
 /**
  * Contains a mapping between a MAC address and an IP address.
  */
-public class AddressPair  {
-
-   @Named("mac_address")
-   private String macAddress;
-   @Named("ip_address")
-   private String ipAddress;
-
-   @ConstructorProperties({"mac_address", "ip_address"})
-   protected AddressPair(String macAddress, String ipAddress) {
-      checkNotNull(macAddress, "mac address should not be null");
-      checkNotNull(ipAddress, "ip should not be null");
-      this.macAddress = macAddress;
-      this.ipAddress = ipAddress;
-   }
-
-   /**
-    * Copy constructor
-    * @param addressPair
-    */
-   private AddressPair(AddressPair addressPair) {
-      this(addressPair.getMacAddress(), addressPair.getIpAddress());
-   }
-
-   /**
-    * Default constructor
-    */
-   private AddressPair() {}
+@AutoValue
+public abstract class AddressPair  {
 
    /**
     * @return the macAddress of the AddressPair
     */
-   @Nullable
-   public String getMacAddress() {
-      return macAddress;
-   }
-
+   public abstract String getMacAddress();
    /**
     * @return the ipAddress of the AddressPair
     */
-   @Nullable
-   public String getIpAddress() {
-      return ipAddress;
+   public abstract String getIpAddress();
+
+   /**
+    * Gets a Builder configured as this object.
+    */
+   public Builder toBuilder() {
+      return builder().macAddress(getMacAddress()).ipAddress(getIpAddress());
    }
 
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(macAddress, ipAddress);
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj)
-         return true;
-      if (obj == null || getClass() != obj.getClass())
-         return false;
-      AddressPair that = AddressPair.class.cast(obj);
-      return Objects.equal(this.macAddress, that.macAddress) && Objects.equal(this.ipAddress, that.ipAddress);
-   }
-
-   protected Objects.ToStringHelper string() {
-      return Objects.toStringHelper(this).add("macAddress", macAddress).add("ipAddress", ipAddress);
-   }
-
-   @Override
-   public String toString() {
-      return string().toString();
+   @SerializedNames({"mac_address", "ip_address"})
+   private static AddressPair create(String macAddress, String ipAddress) {
+      return builder().macAddress(macAddress).ipAddress(ipAddress).build();
    }
 
    /**
@@ -102,49 +51,19 @@ public class AddressPair  {
     * In this case, both parameters are required.
     * @return the Builder for AddressPair
     */
-   public static Builder builder(String macAddress, String ipAddress) {
-      return new Builder(macAddress, ipAddress);
+   public static Builder builder() {
+      return new AutoValue_AddressPair.Builder();
    }
 
-   /**
-    * Gets a Builder configured as this object.
-    */
-   public Builder toBuilder() {
-      return new Builder().fromAddressPair(this);
-   }
-
-   public static class Builder {
-      // Keep track of the builder's state.
-      private AddressPair addressPair;
-
-      /**
-       * No-parameters constructor used when updating.
-       * */
-      private Builder() {
-         addressPair = new AddressPair();
-      }
-
-      /**
-       * Required parameters constructor used when creating.
-       * @param macAddress
-       * @param ipAddress
-       */
-      private Builder(String macAddress, String ipAddress) {
-         addressPair = new AddressPair();
-         addressPair.macAddress = macAddress;
-         addressPair.ipAddress = ipAddress;
-      }
-
+   @AutoValue.Builder
+   public abstract static class Builder {
       /**
        * Provide the macAddress to the AddressPair's Builder.
        *
        * @return the Builder.
        * @see AddressPair#getMacAddress()
        */
-      public Builder macAddress(String macAddress) {
-         addressPair.macAddress = macAddress;
-         return this;
-      }
+      public abstract Builder macAddress(String macAddress);
 
       /**
        * Provide the ipAddress to the AddressPair's Builder.
@@ -152,25 +71,9 @@ public class AddressPair  {
        * @return the Builder.
        * @see AddressPair#getIpAddress()
        */
-      public Builder ipAddress(String ipAddress) {
-         addressPair.ipAddress = ipAddress;
-         return this;
-      }
-
-      /**
-       * @return a AddressPair constructed with this Builder.
-       */
-      public AddressPair build() {
-         // Use the copy constructor to copy the builder's state (config) object and pass back to the user.
-         // Immutability is preserved, and fields are defined only once.
-         return new AddressPair(addressPair);
-      }
-
-      /**
-       * @return a Builder from another AddressPair.
-       */
-      public Builder fromAddressPair(AddressPair in) {
-         return this.macAddress(in.getMacAddress()).ipAddress(in.getIpAddress());
-      }
+      public abstract Builder ipAddress(String ipAddress);
+      public abstract String getMacAddress();
+      public abstract String getIpAddress();
+      public abstract AddressPair build();
    }
 }

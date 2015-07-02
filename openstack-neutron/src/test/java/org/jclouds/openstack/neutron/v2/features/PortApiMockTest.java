@@ -66,7 +66,7 @@ public class PortApiMockTest extends BaseNeutronApiMockTest {
                .name("port1")
                .adminStateUp(Boolean.TRUE)
                .deviceId("d6b4d3a5-c700-476f-b609-1493dd9dadc0")
-               .allowedAddressPairs(ImmutableSet.of(AddressPair.builder("12", "111.222.333.444").build()))
+               .allowedAddressPairs(ImmutableSet.of(AddressPair.builder().macAddress("12").ipAddress("111.222.333.444").build()))
                .build();
 
          Port port = api.create(createPort);
@@ -113,7 +113,7 @@ public class PortApiMockTest extends BaseNeutronApiMockTest {
                .name("port1")
                .adminStateUp(Boolean.TRUE)
                .deviceId("d6b4d3a5-c700-476f-b609-1493dd9dadc0")
-               .allowedAddressPairs(ImmutableSet.of(AddressPair.builder("12", "111.222.333.444").build()))
+               .allowedAddressPairs(ImmutableSet.of(AddressPair.builder().macAddress("12").ipAddress("111.222.333.444").build()))
                .build();
 
          Port port = api.create(createPort);
