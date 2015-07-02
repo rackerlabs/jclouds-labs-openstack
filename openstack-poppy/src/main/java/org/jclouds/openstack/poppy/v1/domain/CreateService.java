@@ -62,6 +62,7 @@ public abstract class CreateService {
    public static Builder builder() {
       return new AutoValue_CreateService.Builder().caching(null).restrictions(null);
    }
+
    public Builder toBuilder() {
       return builder()
             .name(getName())
