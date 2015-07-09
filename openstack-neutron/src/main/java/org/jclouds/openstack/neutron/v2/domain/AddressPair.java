@@ -46,11 +46,6 @@ public abstract class AddressPair  {
       return builder().macAddress(macAddress).ipAddress(ipAddress).build();
    }
 
-   /**
-    * Returns a builder, but requires the user to specify any parameters required when creating a resource.
-    * In this case, both parameters are required.
-    * @return the Builder for AddressPair
-    */
    public static Builder builder() {
       return new AutoValue_AddressPair.Builder();
    }

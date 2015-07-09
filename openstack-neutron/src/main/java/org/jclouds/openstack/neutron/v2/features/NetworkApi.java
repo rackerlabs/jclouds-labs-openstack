@@ -32,6 +32,7 @@ import org.jclouds.Fallbacks.EmptyPagedIterableOnNotFoundOr404;
 import org.jclouds.collect.PagedIterable;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
+import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.Networks;
 import org.jclouds.openstack.neutron.v2.fallbacks.EmptyNetworksFallback;
@@ -109,7 +110,7 @@ public interface NetworkApi {
    @Named("network:create")
    @POST
    @SelectJson("network")
-   Network create(@WrapWith("network") Network.CreateNetwork network);
+   Network create(@WrapWith("network") CreateNetwork network);
 
    /**
     * Create multiple networks
@@ -120,7 +121,7 @@ public interface NetworkApi {
    @Named("network:createBulk")
    @POST
    @SelectJson("networks")
-   FluentIterable<Network> createBulk(@WrapWith("networks") ImmutableList<Network.CreateNetwork> networks);
+   FluentIterable<Network> createBulk(@WrapWith("networks") ImmutableList<CreateNetwork> networks);
 
    /**
     * Update a network
@@ -135,7 +136,7 @@ public interface NetworkApi {
    @SelectJson("network")
    @Fallback(Fallbacks.NullOnNotFoundOr404.class)
    @Nullable
-   Network update(@PathParam("id") String id, @WrapWith("network") Network.UpdateNetwork network);
+   Network update(@PathParam("id") String id, @WrapWith("network") UpdateNetwork network);
 
    /**
     * Deletes the specified network
