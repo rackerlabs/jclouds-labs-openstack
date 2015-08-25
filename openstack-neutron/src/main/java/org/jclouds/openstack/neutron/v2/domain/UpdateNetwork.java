@@ -30,10 +30,10 @@ import com.google.common.collect.ImmutableSet;
  *      doc</a>
  */
 @AutoValue
-public abstract class CreateNetwork {
+public abstract class UpdateNetwork {
 
    // Package-private constructor
-   CreateNetwork() {}
+   UpdateNetwork() {}
 
    @Nullable public abstract ImmutableSet<String> getSubnets();
    @Nullable public abstract String getName();
@@ -76,7 +76,7 @@ public abstract class CreateNetwork {
          "provider:network_type", "provider:physical_network", "provider:segmentation_id", "router:external",
          "port_security_enabled", "n1kv:profile_id", "n1kv:multicast_ip", "n1kv:segment_add", "n1kv:segment_del",
          "n1kv:member_segments", "segments", "flavor:network"})
-   private static CreateNetwork create(ImmutableSet<String> subnets, String name, Boolean adminStateUp,
+   private static UpdateNetwork create(ImmutableSet<String> subnets, String name, Boolean adminStateUp,
          Boolean shared, String tenantId, NetworkType networkType, String physicalNetworkName, Integer segmentationId,
          Boolean external, Boolean portSecurity, String profileId, String multicastIp, String segmentAdd,
          String segmentDel, String memberSegments, ImmutableSet<NetworkSegment> segments, String networkFlavor) {
@@ -102,7 +102,7 @@ public abstract class CreateNetwork {
    }
 
    public static Builder builder() {
-      return new AutoValue_CreateNetwork.Builder();
+      return new AutoValue_UpdateNetwork.Builder();
    }
 
    @AutoValue.Builder
@@ -119,7 +119,7 @@ public abstract class CreateNetwork {
        * Provide the name to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getName()
+       * @see UpdateNetwork#getName()
        */
       public abstract Builder name(String name);
 
@@ -127,7 +127,7 @@ public abstract class CreateNetwork {
        * Provide the adminStateUp to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getAdminStateUp()
+       * @see UpdateNetwork#getAdminStateUp()
        */
       public abstract Builder adminStateUp(Boolean adminStateUp);
 
@@ -135,7 +135,7 @@ public abstract class CreateNetwork {
        * Provide the shared to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getShared()
+       * @see UpdateNetwork#getShared()
        */
       public abstract Builder shared(Boolean shared);
 
@@ -143,7 +143,7 @@ public abstract class CreateNetwork {
        * Provide the tenantId to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getTenantId()
+       * @see UpdateNetwork#getTenantId()
        */
       public abstract Builder tenantId(String tenantId);
 
@@ -151,7 +151,7 @@ public abstract class CreateNetwork {
        * Provide the networkType to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getNetworkType()
+       * @see UpdateNetwork#getNetworkType()
        */
       public abstract Builder networkType(NetworkType networkType);
 
@@ -159,7 +159,7 @@ public abstract class CreateNetwork {
        * Provide the physicalNetworkName to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getPhysicalNetworkName()
+       * @see UpdateNetwork#getPhysicalNetworkName()
        */
       public abstract Builder physicalNetworkName(String physicalNetworkName);
 
@@ -167,7 +167,7 @@ public abstract class CreateNetwork {
        * Provide the segmentationId to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getSegmentationId()
+       * @see UpdateNetwork#getSegmentationId()
        */
       public abstract Builder segmentationId(Integer segmentationId);
 
@@ -175,7 +175,7 @@ public abstract class CreateNetwork {
        * Adds external network attribute to network resource.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getExternal()
+       * @see UpdateNetwork#getExternal()
        */
       public abstract Builder external(Boolean external);
 
@@ -183,7 +183,7 @@ public abstract class CreateNetwork {
        * Provide the portSecurity to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getPortSecurity()
+       * @see UpdateNetwork#getPortSecurity()
        */
       public abstract Builder portSecurity(Boolean portSecurity);
 
@@ -191,7 +191,7 @@ public abstract class CreateNetwork {
        * Provide the profileId to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getProfileId()
+       * @see UpdateNetwork#getProfileId()
        */
       public abstract Builder profileId(String profileId);
 
@@ -199,7 +199,7 @@ public abstract class CreateNetwork {
        * Provide the multicastIp to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getMulticastIp()
+       * @see UpdateNetwork#getMulticastIp()
        */
       public abstract Builder multicastIp(String multicastIp);
 
@@ -208,7 +208,7 @@ public abstract class CreateNetwork {
        * Cisco plugin extension; admin right might be needed to use this.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getSegmentAdd()
+       * @see UpdateNetwork#getSegmentAdd()
        */
       public abstract Builder segmentAdd(String segmentAdd);
 
@@ -217,7 +217,7 @@ public abstract class CreateNetwork {
        * Cisco plugin extension; admin right might be needed to use this.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getSegmentDel()
+       * @see UpdateNetwork#getSegmentDel()
        */
       public abstract Builder segmentDel(String segmentDel);
 
@@ -226,7 +226,7 @@ public abstract class CreateNetwork {
        * Cisco plugin extension; admin right might be needed to use this.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getMemberSegments()
+       * @see UpdateNetwork#getMemberSegments()
        */
       public abstract Builder memberSegments(String memberSegments);
 
@@ -235,7 +235,7 @@ public abstract class CreateNetwork {
        * Multiprovider extension.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getSegments()
+       * @see UpdateNetwork#getSegments()
        */
       public abstract Builder segments(ImmutableSet<NetworkSegment> segments);
 
@@ -243,16 +243,16 @@ public abstract class CreateNetwork {
        * Provide the networkFlavor to the Network's Builder.
        *
        * @return the Builder.
-       * @see org.jclouds.openstack.neutron.v2.domain.CreateNetwork#getNetworkFlavor()
+       * @see UpdateNetwork#getNetworkFlavor()
        */
       public abstract Builder networkFlavor(String networkFlavor);
 
       abstract ImmutableSet<NetworkSegment> getSegments();
       abstract ImmutableSet<String> getSubnets();
 
-      abstract CreateNetwork autoBuild();
+      abstract UpdateNetwork autoBuild();
 
-      public CreateNetwork build() {
+      public UpdateNetwork build() {
          segments(getSegments() != null ? ImmutableSet.copyOf(getSegments()) : null);
          subnets(getSubnets() != null ? ImmutableSet.copyOf(getSubnets()) : null);
          return autoBuild();

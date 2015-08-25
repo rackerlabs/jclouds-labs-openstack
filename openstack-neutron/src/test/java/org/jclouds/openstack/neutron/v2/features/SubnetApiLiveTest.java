@@ -16,24 +16,25 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Set;
+
 import org.jclouds.openstack.neutron.v2.domain.AllocationPool;
+import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.HostRoute;
-import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
 import org.jclouds.openstack.neutron.v2.domain.Subnet;
 import org.jclouds.openstack.neutron.v2.internal.BaseNeutronApiLiveTest;
 import org.jclouds.openstack.neutron.v2.util.PredicateUtil;
 import org.testng.annotations.Test;
 
-import java.util.Set;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * Tests subnet api in combination with the network api
@@ -44,7 +45,7 @@ public class SubnetApiLiveTest extends BaseNeutronApiLiveTest {
    public void testCreateUpdateAndDeleteSubnet() {
       for (String region : api.getConfiguredRegions()) {
          NetworkApi networkApi = api.getNetworkApi(region);
-         String networkId = networkApi.create(Network.createBuilder("jclouds-live-test").networkType(NetworkType.LOCAL).build()).getId();
+         String networkId = networkApi.create(CreateNetwork.builder().name("jclouds-live-test").networkType(NetworkType.LOCAL).build()).getId();
 
          SubnetApi subnetApi = api.getSubnetApi(region);
          ImmutableSet<AllocationPool> allocationPools = ImmutableSet.of(
@@ -91,7 +92,7 @@ public class SubnetApiLiveTest extends BaseNeutronApiLiveTest {
    public void testBulkCreateSubnet() {
       for (String region : api.getConfiguredRegions()) {
          NetworkApi networkApi = api.getNetworkApi(region);
-         String networkId = networkApi.create(Network.createBuilder("jclouds-live-test").networkType(NetworkType.LOCAL).build()).getId();
+         String networkId = networkApi.create(CreateNetwork.builder().name("jclouds-live-test").networkType(NetworkType.LOCAL).build()).getId();
 
          SubnetApi subnetApi = api.getSubnetApi(region);
          Set<? extends Subnet> subnets = subnetApi.createBulk(

@@ -25,6 +25,9 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class AddressPair  {
 
+   // Package-private constructor
+   AddressPair() {}
+
    /**
     * @return the macAddress of the AddressPair
     */

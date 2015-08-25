@@ -16,20 +16,23 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
+import org.jclouds.openstack.neutron.v2.domain.UpdateNetwork;
 import org.jclouds.openstack.neutron.v2.internal.BaseNeutronApiLiveTest;
 import org.jclouds.openstack.neutron.v2.util.PredicateUtil;
 import org.testng.annotations.Test;
 
-import java.util.Set;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 
 /**
  * Tests parsing and Guice wiring of NetworkApi
@@ -40,8 +43,9 @@ public class NetworkApiLiveTest extends BaseNeutronApiLiveTest {
    public void testCreateUpdateAndDeleteNetwork() {
       for (String region : api.getConfiguredRegions()) {
          NetworkApi networkApi = api.getNetworkApi(region);
-         Network net = networkApi.create(Network.createBuilder("jclouds-test").networkType(NetworkType.LOCAL).build());
-         Network test = networkApi.create(Network.createBuilder("jclouds-test").build());
+         Network net = networkApi.create(
+               CreateNetwork.builder().name("jclouds-test").networkType(NetworkType.LOCAL).build());
+         Network test = networkApi.create(CreateNetwork.builder().name("jclouds-test").build());
          assertNotNull(net);
 
          /* List and get tests */
@@ -57,7 +61,7 @@ public class NetworkApiLiveTest extends BaseNeutronApiLiveTest {
          assertEquals(network.getName(), "jclouds-test");
          assertEquals(network.getNetworkType(), NetworkType.LOCAL);
          assertTrue(network.getSubnets().isEmpty());
-         assertNotNull(networkApi.update(net.getId(), Network.updateBuilder().name("jclouds-live-test").build()));
+         assertNotNull(networkApi.update(net.getId(), UpdateNetwork.builder().name("jclouds-live-test").build()));
 
          network = networkApi.get(net.getId());
 
@@ -65,7 +69,7 @@ public class NetworkApiLiveTest extends BaseNeutronApiLiveTest {
          assertEquals(network.getName(), "jclouds-live-test");
          assertTrue(network.getSubnets().isEmpty());
 
-         Network net2 = networkApi.create(Network.createBuilder("jclouds-test2").networkType(NetworkType.LOCAL).build());
+         Network net2 = networkApi.create(CreateNetwork.builder().name("jclouds-test2").networkType(NetworkType.LOCAL).build());
          assertNotNull(net2);
 
          assertTrue(networkApi.delete(net.getId()));
@@ -79,9 +83,9 @@ public class NetworkApiLiveTest extends BaseNeutronApiLiveTest {
          NetworkApi networkApi = api.getNetworkApi(region);
          Set<Network> nets = networkApi.createBulk(
                ImmutableList.of(
-                  Network.createBuilder("jclouds-live-test-1").networkType(NetworkType.LOCAL).adminStateUp(true).build(),
-                  Network.createBuilder("jclouds-live-test-2").networkType(NetworkType.LOCAL).adminStateUp(false).build(),
-                  Network.createBuilder("jclouds-live-test-3").networkType(NetworkType.LOCAL).adminStateUp(false).build()
+                  CreateNetwork.builder().name("jclouds-live-test-1").networkType(NetworkType.LOCAL).adminStateUp(true).build(),
+                  CreateNetwork.builder().name("jclouds-live-test-2").networkType(NetworkType.LOCAL).adminStateUp(false).build(),
+                  CreateNetwork.builder().name("jclouds-live-test-3").networkType(NetworkType.LOCAL).adminStateUp(false).build()
                )
          ).toSet();
          Set<Network> existingNets = networkApi.list().concat().toSet();

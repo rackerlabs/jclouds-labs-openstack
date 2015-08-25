@@ -35,6 +35,7 @@ import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
 import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.Networks;
+import org.jclouds.openstack.neutron.v2.domain.UpdateNetwork;
 import org.jclouds.openstack.neutron.v2.fallbacks.EmptyNetworksFallback;
 import org.jclouds.openstack.neutron.v2.functions.NetworksToPagedIterable;
 import org.jclouds.openstack.neutron.v2.functions.ParseNetworks;

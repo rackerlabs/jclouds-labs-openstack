@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.jclouds.logging.Logger;
+import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
 import org.jclouds.openstack.neutron.v2.domain.Subnet;
@@ -91,7 +92,8 @@ public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
          NetworkApi networkApi = api.getNetworkApi(region);
          SubnetApi subnetApi = api.getSubnetApi(region);
 
-         Network network = networkApi.create(Network.createBuilder("jclouds-lbaas-test-network").networkType(NetworkType.LOCAL).build());
+         Network network = networkApi.create(
+               CreateNetwork.builder().name("jclouds-lbaas-test-network").networkType(NetworkType.LOCAL).build());
          assertNotNull(network);
          networks.put(region, network);
 

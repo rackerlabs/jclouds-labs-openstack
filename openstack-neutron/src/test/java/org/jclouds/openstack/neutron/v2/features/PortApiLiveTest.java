@@ -16,12 +16,15 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
 import org.jclouds.openstack.neutron.v2.domain.IP;
-import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
 import org.jclouds.openstack.neutron.v2.domain.Port;
 import org.jclouds.openstack.neutron.v2.domain.Subnet;
@@ -29,12 +32,10 @@ import org.jclouds.openstack.neutron.v2.internal.BaseNeutronApiLiveTest;
 import org.jclouds.openstack.neutron.v2.util.PredicateUtil;
 import org.testng.annotations.Test;
 
-import java.util.Set;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * Tests PortApi in combination with the Network & SubnetApi
@@ -48,7 +49,7 @@ public class PortApiLiveTest extends BaseNeutronApiLiveTest {
          SubnetApi subnetApi = api.getSubnetApi(region);
          PortApi portApi = api.getPortApi(region);
          String networkId = networkApi.create(
-               Network.createBuilder("JClouds-Live-Network").networkType(NetworkType.LOCAL).build()).getId();
+               CreateNetwork.builder().name("JClouds-Live-Network").networkType(NetworkType.LOCAL).build()).getId();
          String ipv4SubnetId = subnetApi.create(Subnet.createBuilder(networkId, "198.51.100.0/24").ipVersion(4)
                .name("JClouds-Live-IPv4-Subnet").build()).getId();
          String ipv6SubnetId = subnetApi.create(Subnet.createBuilder(networkId, "a1ca:1e1:c:107d::/96").ipVersion(6)
@@ -102,7 +103,7 @@ public class PortApiLiveTest extends BaseNeutronApiLiveTest {
          PortApi portApi = api.getPortApi(region);
 
          String networkId = networkApi.create(
-               Network.createBuilder("JClouds-Live-Network").networkType(NetworkType.LOCAL).build()).getId();
+               CreateNetwork.builder().name("JClouds-Live-Network").networkType(NetworkType.LOCAL).build()).getId();
          String ipv4SubnetId = subnetApi.create(Subnet.createBuilder(networkId, "198.51.100.0/24").ipVersion(4)
                .name("JClouds-Live-IPv4-Subnet").build()).getId();
          String ipv6SubnetId = subnetApi.create(Subnet.createBuilder(networkId, "a1ca:1e1:c:107d::/96").ipVersion(6)
