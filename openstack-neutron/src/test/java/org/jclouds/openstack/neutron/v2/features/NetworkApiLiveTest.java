@@ -20,6 +20,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Set;
 
 import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
@@ -81,13 +82,13 @@ public class NetworkApiLiveTest extends BaseNeutronApiLiveTest {
    public void testBulkCreateNetwork() {
       for (String region : api.getConfiguredRegions()) {
          NetworkApi networkApi = api.getNetworkApi(region);
-         Set<Network> nets = networkApi.createBulk(
+         List<Network> nets = networkApi.createBulk(
                ImmutableList.of(
                   CreateNetwork.builder().name("jclouds-live-test-1").networkType(NetworkType.LOCAL).adminStateUp(true).build(),
                   CreateNetwork.builder().name("jclouds-live-test-2").networkType(NetworkType.LOCAL).adminStateUp(false).build(),
                   CreateNetwork.builder().name("jclouds-live-test-3").networkType(NetworkType.LOCAL).adminStateUp(false).build()
                )
-         ).toSet();
+         );
          Set<Network> existingNets = networkApi.list().concat().toSet();
 
          assertNotNull(nets);

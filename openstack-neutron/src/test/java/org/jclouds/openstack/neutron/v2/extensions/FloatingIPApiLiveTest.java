@@ -24,11 +24,11 @@ import static org.testng.Assert.assertTrue;
 import java.util.Set;
 
 import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
+import org.jclouds.openstack.neutron.v2.domain.CreateSubnet;
 import org.jclouds.openstack.neutron.v2.domain.FloatingIP;
 import org.jclouds.openstack.neutron.v2.domain.IP;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
-import org.jclouds.openstack.neutron.v2.domain.Subnet;
 import org.jclouds.openstack.neutron.v2.features.NetworkApi;
 import org.jclouds.openstack.neutron.v2.features.SubnetApi;
 import org.jclouds.openstack.neutron.v2.internal.BaseNeutronApiLiveTest;
@@ -58,7 +58,7 @@ public class FloatingIPApiLiveTest extends BaseNeutronApiLiveTest {
                   CreateNetwork.builder().name("jclouds-network-test").external(true).networkType(NetworkType.LOCAL).build());
             assertNotNull(network);
 
-            ipv4SubnetId = subnetApi.create(Subnet.createBuilder(network.getId(), "198.51.100.0/24").ipVersion(4)
+            ipv4SubnetId = subnetApi.create(CreateSubnet.builder().networkId(network.getId()).cidr("198.51.100.0/24").ipVersion(4)
                   .name("JClouds-Live-IPv4-Subnet").build()).getId();
 
             floatingIPApi.create(FloatingIP.createBuilder(network.getId()).build());

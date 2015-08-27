@@ -16,8 +16,18 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import com.google.common.annotations.Beta;
-import com.google.common.collect.FluentIterable;
+import java.util.List;
+
+import javax.inject.Named;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
+
 import org.jclouds.Fallbacks;
 import org.jclouds.Fallbacks.EmptyPagedIterableOnNotFoundOr404;
 import org.jclouds.collect.PagedIterable;
@@ -36,16 +46,7 @@ import org.jclouds.rest.annotations.SelectJson;
 import org.jclouds.rest.annotations.Transform;
 import org.jclouds.rest.annotations.WrapWith;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
+import com.google.common.annotations.Beta;
 
 /**
  * Provides access to Port operations for the OpenStack Networking (Neutron) v2 API.
@@ -118,7 +119,7 @@ public interface PortApi {
    @Named("port:createBulk")
    @POST
    @SelectJson("ports")
-   FluentIterable<Port> createBulk(@WrapWith("ports") List<Port.CreatePort> ports);
+   List<Port> createBulk(@WrapWith("ports") List<Port.CreatePort> ports);
 
    /**
     * Update a port

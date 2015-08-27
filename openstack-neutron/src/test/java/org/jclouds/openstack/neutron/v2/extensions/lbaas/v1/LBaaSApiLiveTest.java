@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jclouds.logging.Logger;
 import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
+import org.jclouds.openstack.neutron.v2.domain.CreateSubnet;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
 import org.jclouds.openstack.neutron.v2.domain.Subnet;
@@ -97,7 +98,8 @@ public class LBaaSApiLiveTest extends BaseNeutronApiLiveTest {
          assertNotNull(network);
          networks.put(region, network);
 
-         Subnet subnet = subnetApi.create(Subnet.createBuilder(network.getId(), "10.0.0.0/24").ipVersion(4).name("jclouds-lbaas-test-subnet").build());
+         Subnet subnet = subnetApi.create(
+               CreateSubnet.builder().networkId(network.getId()).cidr("10.0.0.0/24").ipVersion(4).name("jclouds-lbaas-test-subnet").build());
          assertNotNull(subnet);
          subnets.put(region, subnet);
       }

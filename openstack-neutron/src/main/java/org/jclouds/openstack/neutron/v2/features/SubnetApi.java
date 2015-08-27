@@ -16,24 +16,8 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import com.google.common.collect.FluentIterable;
-import org.jclouds.Fallbacks;
-import org.jclouds.Fallbacks.EmptyPagedIterableOnNotFoundOr404;
-import org.jclouds.collect.PagedIterable;
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
-import org.jclouds.openstack.neutron.v2.domain.Subnet;
-import org.jclouds.openstack.neutron.v2.domain.Subnets;
-import org.jclouds.openstack.neutron.v2.fallbacks.EmptySubnetsFallback;
-import org.jclouds.openstack.neutron.v2.functions.ParseSubnets;
-import org.jclouds.openstack.neutron.v2.functions.SubnetsToPagedIterable;
-import org.jclouds.openstack.v2_0.options.PaginationOptions;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.annotations.ResponseParser;
-import org.jclouds.rest.annotations.SelectJson;
-import org.jclouds.rest.annotations.Transform;
-import org.jclouds.rest.annotations.WrapWith;
+import java.util.List;
+import java.util.Set;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -45,7 +29,26 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+
+import org.jclouds.Fallbacks;
+import org.jclouds.Fallbacks.EmptyPagedIterableOnNotFoundOr404;
+import org.jclouds.collect.PagedIterable;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
+import org.jclouds.openstack.neutron.v2.domain.CreateSubnet;
+import org.jclouds.openstack.neutron.v2.domain.Subnet;
+import org.jclouds.openstack.neutron.v2.domain.Subnets;
+import org.jclouds.openstack.neutron.v2.domain.UpdateSubnet;
+import org.jclouds.openstack.neutron.v2.fallbacks.EmptySubnetsFallback;
+import org.jclouds.openstack.neutron.v2.functions.ParseSubnets;
+import org.jclouds.openstack.neutron.v2.functions.SubnetsToPagedIterable;
+import org.jclouds.openstack.v2_0.options.PaginationOptions;
+import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.annotations.ResponseParser;
+import org.jclouds.rest.annotations.SelectJson;
+import org.jclouds.rest.annotations.Transform;
+import org.jclouds.rest.annotations.WrapWith;
 
 /**
  * Provides access to Subnet operations for the OpenStack Networking (Neutron) v2 API.
@@ -104,7 +107,7 @@ public interface SubnetApi {
    @Named("subnet:create")
    @POST
    @SelectJson("subnet")
-   Subnet create(@WrapWith("subnet") Subnet.CreateSubnet subnet);
+   Subnet create(@WrapWith("subnet") CreateSubnet subnet);
 
    /**
     * Create multiple subnets
@@ -115,7 +118,7 @@ public interface SubnetApi {
    @Named("subnet:createBulk")
    @POST
    @SelectJson("subnets")
-   FluentIterable<Subnet> createBulk(@WrapWith("subnets") List<Subnet.CreateSubnet> subnets);
+   Set<Subnet> createBulk(@WrapWith("subnets") List<CreateSubnet> subnets);
 
    /**
     * Update a subnet
@@ -128,7 +131,7 @@ public interface SubnetApi {
    @Path("/{id}")
    @SelectJson("subnet")
    @Fallback(Fallbacks.NullOnNotFoundOr404.class)
-   Subnet update(@PathParam("id") String id, @WrapWith("subnet") Subnet.UpdateSubnet subnet);
+   Subnet update(@PathParam("id") String id, @WrapWith("subnet") UpdateSubnet subnet);
 
    /**
     * Delete a subnet

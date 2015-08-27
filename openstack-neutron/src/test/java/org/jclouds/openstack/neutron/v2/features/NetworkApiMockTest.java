@@ -38,7 +38,6 @@ import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -296,7 +295,7 @@ public class NetworkApiMockTest extends BaseNeutronApiMockTest {
                .networkType(NetworkType.LOCAL)
                .build();
 
-         FluentIterable<Network> networks = api.createBulk(ImmutableList.of(createNetwork1, createNetwork2));
+         List<Network> networks = api.createBulk(ImmutableList.of(createNetwork1, createNetwork2));
 
          /*
           * Check request
@@ -343,7 +342,7 @@ public class NetworkApiMockTest extends BaseNeutronApiMockTest {
                .networkType(NetworkType.LOCAL)
                .build();
 
-         FluentIterable<Network> networks = api.createBulk(ImmutableList.of(createNetwork1, createNetwork2));
+         List<Network> networks = api.createBulk(ImmutableList.of(createNetwork1, createNetwork2));
       } finally {
          server.shutdown();
       }

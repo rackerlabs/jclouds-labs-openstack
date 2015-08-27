@@ -24,6 +24,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Set;
 
 import org.jclouds.openstack.neutron.v2.domain.CreateNetwork;
+import org.jclouds.openstack.neutron.v2.domain.CreateSubnet;
 import org.jclouds.openstack.neutron.v2.domain.ExternalGatewayInfo;
 import org.jclouds.openstack.neutron.v2.domain.Network;
 import org.jclouds.openstack.neutron.v2.domain.NetworkType;
@@ -53,7 +54,8 @@ public class RouterApiLiveTest extends BaseNeutronApiLiveTest {
                CreateNetwork.builder().name("jclouds-network-test").external(true).networkType(NetworkType.LOCAL).build());
          assertNotNull(network);
 
-         Subnet subnet = subnetApi.create(Subnet.createBuilder(network.getId(), "192.168.0.0/16").ipVersion(4).build());
+         Subnet subnet = subnetApi.create(
+               CreateSubnet.builder().networkId(network.getId()).cidr("192.168.0.0/16").ipVersion(4).build());
          assertNotNull(subnet);
 
          Router router = routerApi.create(Router.createBuilder().name("jclouds-router-test")
@@ -99,13 +101,15 @@ public class RouterApiLiveTest extends BaseNeutronApiLiveTest {
          Network network = networkApi.create(CreateNetwork.builder().name("jclouds-network-test").external(true).networkType(NetworkType.LOCAL).build());
          assertNotNull(network);
 
-         Subnet subnet = subnetApi.create(Subnet.createBuilder(network.getId(), "192.168.0.0/16").ipVersion(4).build());
+         Subnet subnet = subnetApi.create(
+               CreateSubnet.builder().networkId(network.getId()).cidr("192.168.0.0/16").ipVersion(4).build());
          assertNotNull(subnet);
 
          Network network2 = networkApi.create(CreateNetwork.builder().name("jclouds-network-test2").external(true).networkType(NetworkType.LOCAL).build());
          assertNotNull(network2);
 
-         Subnet subnet2 = subnetApi.create(Subnet.createBuilder(network2.getId(), "192.169.0.0/16").ipVersion(4).build());
+         Subnet subnet2 = subnetApi.create(
+               CreateSubnet.builder().networkId(network2.getId()).cidr("192.169.0.0/16").ipVersion(4).build());
          assertNotNull(subnet2);
 
          Router router = routerApi.create(Router.createBuilder().name("jclouds-router-test").build());
@@ -137,13 +141,13 @@ public class RouterApiLiveTest extends BaseNeutronApiLiveTest {
          Network network = networkApi.create(CreateNetwork.builder().name("jclouds-network-test").external(true).networkType(NetworkType.LOCAL).build());
          assertNotNull(network);
 
-         Subnet subnet = subnetApi.create(Subnet.createBuilder(network.getId(), "192.168.0.0/16").ipVersion(4).build());
+         Subnet subnet = subnetApi.create(CreateSubnet.builder().networkId(network.getId()).cidr("192.168.0.0/16").ipVersion(4).build());
          assertNotNull(subnet);
 
          Network network2 = networkApi.create(CreateNetwork.builder().name("jclouds-network-test2").external(true).networkType(NetworkType.LOCAL).build());
          assertNotNull(network2);
 
-         Subnet subnet2 = subnetApi.create(Subnet.createBuilder(network2.getId(), "192.169.0.0/16").ipVersion(4).build());
+         Subnet subnet2 = subnetApi.create(CreateSubnet.builder().networkId(network2.getId()).cidr("192.169.0.0/16").ipVersion(4).build());
          assertNotNull(subnet2);
 
          Port port = portApi.create(Port.createBuilder(network.getId()).build());

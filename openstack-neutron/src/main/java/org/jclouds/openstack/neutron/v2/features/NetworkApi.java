@@ -16,6 +16,8 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
+import java.util.List;
+
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -48,7 +50,6 @@ import org.jclouds.rest.annotations.Transform;
 import org.jclouds.rest.annotations.WrapWith;
 
 import com.google.common.annotations.Beta;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -122,7 +123,7 @@ public interface NetworkApi {
    @Named("network:createBulk")
    @POST
    @SelectJson("networks")
-   FluentIterable<Network> createBulk(@WrapWith("networks") ImmutableList<CreateNetwork> networks);
+   List<Network> createBulk(@WrapWith("networks") ImmutableList<CreateNetwork> networks);
 
    /**
     * Update a network

@@ -39,7 +39,6 @@ import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -261,7 +260,7 @@ public class PortApiMockTest extends BaseNeutronApiMockTest {
                      ImmutableSet.of("8bf3f7cc-8471-40b1-815f-9da47e79775b", "dbc107f4-afcd-4d5a-9352-f68f82241d5b"))
                .build();
 
-         FluentIterable<Port> ports = api.createBulk(ImmutableList.of(createPort1, createPort2));
+         List<Port> ports = api.createBulk(ImmutableList.of(createPort1, createPort2));
 
          /*
           * Check request
@@ -306,7 +305,7 @@ public class PortApiMockTest extends BaseNeutronApiMockTest {
                      ImmutableSet.of("8bf3f7cc-8471-40b1-815f-9da47e79775b", "dbc107f4-afcd-4d5a-9352-f68f82241d5b"))
                .build();
 
-         FluentIterable<Port> ports = api.createBulk(ImmutableList.of(createPort1, createPort2));
+         List<Port> ports = api.createBulk(ImmutableList.of(createPort1, createPort2));
       } finally {
          server.shutdown();
       }

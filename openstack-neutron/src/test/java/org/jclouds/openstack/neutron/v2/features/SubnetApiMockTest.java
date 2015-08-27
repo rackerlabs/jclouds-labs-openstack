@@ -25,17 +25,19 @@ import static org.testng.Assert.assertTrue;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 import org.jclouds.openstack.neutron.v2.NeutronApi;
+import org.jclouds.openstack.neutron.v2.domain.CreateSubnet;
 import org.jclouds.openstack.neutron.v2.domain.IPv6DHCPMode;
 import org.jclouds.openstack.neutron.v2.domain.Subnet;
 import org.jclouds.openstack.neutron.v2.domain.Subnets;
+import org.jclouds.openstack.neutron.v2.domain.UpdateSubnet;
 import org.jclouds.openstack.neutron.v2.internal.BaseNeutronApiMockTest;
 import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -56,7 +58,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.CreateSubnet createSubnet = Subnet.createBuilder("1234567890", "10.0.3.0/24")
+         CreateSubnet createSubnet = CreateSubnet.builder().networkId("1234567890").cidr("10.0.3.0/24")
                .name("jclouds-wibble")
                .ipVersion(4)
                .build();
@@ -93,7 +95,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.CreateSubnet createSubnet = Subnet.createBuilder("1234567890", "cidr")
+         CreateSubnet createSubnet = CreateSubnet.builder().networkId("1234567890").cidr("cidr")
                .name("jclouds-wibble")
                .ipVersion(4)
                .build();
@@ -285,17 +287,17 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.CreateSubnet createSubnet1 = Subnet.createBuilder("e6031bc2-901a-4c66-82da-f4c32ed89406",
-               "192.168.199.0/24")
+         CreateSubnet createSubnet1 = CreateSubnet.builder().networkId("e6031bc2-901a-4c66-82da-f4c32ed89406")
+               .cidr("192.168.199.0/24")
                .ipVersion(4)
                .build();
 
-         Subnet.CreateSubnet createSubnet2 = Subnet.createBuilder("64239a54-dcc4-4b39-920b-b37c2144effa",
-               "10.56.4.0/22")
+         CreateSubnet createSubnet2 = CreateSubnet.builder().networkId("64239a54-dcc4-4b39-920b-b37c2144effa")
+               .cidr("10.56.4.0/22")
                .ipVersion(4)
                .build();
 
-         FluentIterable<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
+         Set<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
 
          /*
           * Check request
@@ -308,10 +310,10 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
           */
          assertNotNull(subnets);
          assertEquals(subnets.size(), 2);
-         assertEquals(subnets.get(0).getName(), "");
+         assertEquals(subnets.iterator().next().getName(), "");
          assertEquals(subnets.get(0).getIpVersion().intValue(), 4);
          assertEquals(subnets.get(0).getCidr(), "192.168.199.0/24");
-         assertTrue(subnets.get(0).getDnsNameservers().isEmpty());
+         assertTrue(subnets.get(0).getDnsNameServers().isEmpty());
          assertTrue(subnets.get(0).getEnableDhcp());
          assertTrue(subnets.get(0).getHostRoutes().isEmpty());
          assertEquals(subnets.get(0).getTenantId(), "d19231fc08ec4bc4829b668040d34512");
@@ -334,17 +336,17 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.CreateSubnet createSubnet1 = Subnet.createBuilder("e6031bc2-901a-4c66-82da-f4c32ed89406",
-               "192.168.199.0/24")
+         CreateSubnet createSubnet1 = CreateSubnet.builder().networkId("e6031bc2-901a-4c66-82da-f4c32ed89406")
+               .cidr("192.168.199.0/24")
                .ipVersion(4)
                .build();
 
-         Subnet.CreateSubnet createSubnet2 = Subnet.createBuilder("64239a54-dcc4-4b39-920b-b37c2144effa",
-               "10.56.4.0/22")
+         CreateSubnet createSubnet2 = CreateSubnet.builder().networkId("64239a54-dcc4-4b39-920b-b37c2144effa")
+               .cidr("10.56.4.0/22")
                .ipVersion(4)
                .build();
 
-         FluentIterable<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
+         List<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
       } finally {
          server.shutdown();
       }
@@ -359,7 +361,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.UpdateSubnet updateSubnet = Subnet.updateBuilder()
+         UpdateSubnet updateSubnet = UpdateSubnet.builder()
                .name("new_name")
                .gatewayIp("10.0.3.254")
                .build();
@@ -394,7 +396,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          NeutronApi neutronApi = api(server.getUrl("/").toString(), "openstack-neutron", overrides);
          SubnetApi api = neutronApi.getSubnetApi("RegionOne");
 
-         Subnet.UpdateSubnet updateSubnet = Subnet.updateBuilder()
+         UpdateSubnet updateSubnet = UpdateSubnet.builder()
                .name("new_name")
                .gatewayIp("10.0.3.254")
                .build();
