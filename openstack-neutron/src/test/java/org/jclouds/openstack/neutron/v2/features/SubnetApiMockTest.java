@@ -311,16 +311,16 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
          assertNotNull(subnets);
          assertEquals(subnets.size(), 2);
          assertEquals(subnets.iterator().next().getName(), "");
-         assertEquals(subnets.get(0).getIpVersion().intValue(), 4);
-         assertEquals(subnets.get(0).getCidr(), "192.168.199.0/24");
-         assertTrue(subnets.get(0).getDnsNameServers().isEmpty());
-         assertTrue(subnets.get(0).getEnableDhcp());
-         assertTrue(subnets.get(0).getHostRoutes().isEmpty());
-         assertEquals(subnets.get(0).getTenantId(), "d19231fc08ec4bc4829b668040d34512");
-         assertEquals(subnets.get(0).getId(), "0468a7a7-290d-4127-aedd-6c9449775a24");
-         assertEquals(subnets.get(0).getNetworkId(), "e6031bc2-901a-4c66-82da-f4c32ed89406");
-         assertEquals(subnets.get(0).getAllocationPools().iterator().next().getStart(), "192.168.199.2");
-         assertEquals(subnets.get(0).getAllocationPools().iterator().next().getEnd(), "192.168.199.254");
+         assertEquals(subnets.iterator().next().getIpVersion().intValue(), 4);
+         assertEquals(subnets.iterator().next().getCidr(), "192.168.199.0/24");
+         assertTrue(subnets.iterator().next().getDnsNameServers().isEmpty());
+         assertTrue(subnets.iterator().next().getEnableDhcp());
+         assertTrue(subnets.iterator().next().getHostRoutes().isEmpty());
+         assertEquals(subnets.iterator().next().getTenantId(), "d19231fc08ec4bc4829b668040d34512");
+         assertEquals(subnets.iterator().next().getId(), "0468a7a7-290d-4127-aedd-6c9449775a24");
+         assertEquals(subnets.iterator().next().getNetworkId(), "e6031bc2-901a-4c66-82da-f4c32ed89406");
+         assertEquals(subnets.iterator().next().getAllocationPools().iterator().next().getStart(), "192.168.199.2");
+         assertEquals(subnets.iterator().next().getAllocationPools().iterator().next().getEnd(), "192.168.199.254");
       } finally {
          server.shutdown();
       }
@@ -346,7 +346,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
                .ipVersion(4)
                .build();
 
-         List<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
+         Set<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
       } finally {
          server.shutdown();
       }
