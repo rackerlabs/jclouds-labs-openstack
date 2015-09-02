@@ -49,7 +49,7 @@ public abstract class UpdateSubnet {
 
    @SerializedNames({"name", "network_id", "tenant_id", "gateway_ip", "ip_version",
          "cidr", "enable_dhcp", "dns_nameservers", "host_routes", "ipv6_address_mode", "ipv6_ra_mode"})
-   private UpdateSubnet create(String name, String networkId, String tenantId,
+   private static UpdateSubnet create(String name, String networkId, String tenantId,
          String gatewayIp, Integer ipVersion, String cidr, Boolean enableDhcp, ImmutableSet<String> dnsNameServers,
          ImmutableSet<HostRoute> hostRoutes,
          IPv6DHCPMode ipv6AddressMode, IPv6DHCPMode ipv6RaMode) {

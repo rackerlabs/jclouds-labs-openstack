@@ -38,7 +38,7 @@ import org.jclouds.openstack.v2_0.options.PaginationOptions;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -297,7 +297,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
                .ipVersion(4)
                .build();
 
-         Set<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
+         Set<Subnet> subnets = api.createBulk(ImmutableSet.of(createSubnet1, createSubnet2));
 
          /*
           * Check request
@@ -346,7 +346,7 @@ public class SubnetApiMockTest extends BaseNeutronApiMockTest {
                .ipVersion(4)
                .build();
 
-         Set<Subnet> subnets = api.createBulk(ImmutableList.of(createSubnet1, createSubnet2));
+         Set<Subnet> subnets = api.createBulk(ImmutableSet.of(createSubnet1, createSubnet2));
       } finally {
          server.shutdown();
       }

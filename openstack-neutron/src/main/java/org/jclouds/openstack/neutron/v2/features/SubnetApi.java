@@ -16,7 +16,6 @@
  */
 package org.jclouds.openstack.neutron.v2.features;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Named;
@@ -118,7 +117,7 @@ public interface SubnetApi {
    @Named("subnet:createBulk")
    @POST
    @SelectJson("subnets")
-   Set<Subnet> createBulk(@WrapWith("subnets") List<CreateSubnet> subnets);
+   Set<Subnet> createBulk(@WrapWith("subnets") Set<CreateSubnet> subnets);
 
    /**
     * Update a subnet

@@ -34,7 +34,6 @@ import org.jclouds.openstack.neutron.v2.util.PredicateUtil;
 import org.testng.annotations.Test;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
@@ -101,7 +100,7 @@ public class SubnetApiLiveTest extends BaseNeutronApiLiveTest {
 
          SubnetApi subnetApi = api.getSubnetApi(region);
          Set<Subnet> subnets = subnetApi.createBulk(
-               ImmutableList.of(
+               ImmutableSet.of(
                   CreateSubnet.builder().networkId("jclouds-live-test-1").cidr("a3:bd01::/48").ipVersion(6).networkId(networkId).build(),
                   CreateSubnet.builder().networkId("jclouds-live-test-2").cidr("a3:bd02::/48").ipVersion(6).networkId(networkId).build(),
                   CreateSubnet.builder().networkId("jclouds-live-test-3").cidr("a3:bd03::/48").ipVersion(6).networkId(networkId).build()
